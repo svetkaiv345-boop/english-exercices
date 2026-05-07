@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time Expressions — Gap-fill Exercise (C1)</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,500;0,600;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #F5F0E8;
+    --ink: #1A1612;
+    --muted: #6B6359;
+    --border: #D4CCBF;
+    --accent: #C4470A;
+    --accent-light: #F5E6DF;
+    --correct: #2D6A4F;
+    --correct-bg: #D8F3DC;
+    --wrong: #9B2226;
+    --wrong-bg: #FFE5E5;
+    --card: #FFFDF9;
+    --chip-bg: #EDE8DF;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0; right: 0;
+    height: 24px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .header-label {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 10px;
+  }
+
+  header h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 600;
+    line-height: 1.15;
+    margin-bottom: 10px;
+    max-width: 600px;
+  }
+
+  header p {
+    font-size: 14px;
+    color: #A89F96;
+    max-width: 500px;
+  }
+
+  .main {
+    max-width: 820px;
+    margin: 0 auto;
+    padding: 2rem 1.25rem 4rem;
+  }
+
+  /* Score bar */
+  .score-bar {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-bottom: 1.75rem;
+  }
+
+  .score-label { font-size: 13px; color: var(--muted); }
+
+  .score-num {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .reset-btn {
+    margin-left: auto;
+    font-size: 12px;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    cursor: pointer;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    transition: background .15s, color .15s;
+  }
+  .reset-btn:hover { background: var(--chip-bg); color: var(--ink); }
+
+  /* Word bank */
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  .bank {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 2rem;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+  }
+
+  .chip {
+    font-size: 13px;
+    padding: 5px 14px;
+    border-radius: 999px;
+    border: 0.5px solid var(--border);
+    background: var(--chip-bg);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background .15s, opacity .2s;
+    font-family: 'DM Sans', sans-serif;
+    user-select: none;
+  }
+  .chip:hover { background: #DDD7CB; }
+  .chip.used { opacity: .3; pointer-events: none; text-decoration: line-through; }
+
+  /* Question cards */
+  .q-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    margin-bottom: 12px;
+    transition: border-color .2s;
+  }
+  .q-card:focus-within { border-color: #9B8F85; }
+
+  .q-top {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 12px;
+  }
+
+  .q-num {
+    font-family: 'Fraunces', serif;
+    font-size: 13px;
+    color: var(--accent);
+    min-width: 22px;
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  .q-sentence {
+    font-size: 15.5px;
+    line-height: 1.8;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .blank {
+    display: inline-block;
+    min-width: 180px;
+    border-bottom: 2px solid var(--accent);
+    padding: 0 6px 1px;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background .12s;
+  }
+  .blank:hover { background: var(--accent-light); }
+  .blank.selected { background: var(--accent-light); outline: 2px solid var(--accent); outline-offset: 1px; border-radius: 4px; }
+  .blank.filled { font-style: normal; color: var(--ink); }
+  .blank.correct { border-color: var(--correct); background: var(--correct-bg); color: var(--correct); font-style: normal; }
+  .blank.wrong { border-color: var(--wrong); background: var(--wrong-bg); color: var(--wrong); font-style: normal; }
+
+  .q-actions {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 8px;
+  }
+
+  .check-btn {
+    font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: var(--ink);
+    color: var(--cream);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: opacity .15s;
+  }
+  .check-btn:hover { opacity: .85; }
+
+  .clear-btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 8px;
+    border: 0.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    transition: background .15s;
+  }
+  .clear-btn:hover { background: var(--chip-bg); }
+
+  .feedback {
+    font-size: 13px;
+    min-height: 18px;
+    margin-bottom: 10px;
+    line-height: 1.6;
+  }
+  .fb-ok { color: var(--correct); font-weight: 500; }
+  .fb-no { color: var(--wrong); }
+
+  /* Opinion slider */
+  .opinion-row {
+    border-top: 0.5px solid var(--border);
+    padding-top: 12px;
+    margin-top: 2px;
+  }
+
+  .op-label {
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    font-style: italic;
+  }
+
+  .op-statement {
+    font-size: 13.5px;
+    color: var(--ink);
+    line-height: 1.55;
+    margin-bottom: 10px;
+  }
+
+  .op-scale {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .op-end {
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .op-scale input[type=range] {
+    flex: 1;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    outline: none;
+    cursor: pointer;
+  }
+  .op-scale input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    border: 2px solid var(--cream);
+    box-shadow: 0 0 0 1px var(--border);
+  }
+  .op-scale input[type=range]::-moz-range-thumb {
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: var(--ink);
+    cursor: pointer;
+    border: 2px solid var(--cream);
+  }
+
+  .op-val {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 100px;
+    text-align: right;
+  }
+
+  /* Definitions */
+  .def-section {
+    margin-top: 2.5rem;
+    border-top: 0.5px solid var(--border);
+    padding-top: 1.75rem;
+  }
+
+  .def-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 1rem;
+  }
+
+  .def-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 10px;
+  }
+
+  .def-card {
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 12px;
+    padding: 12px 16px;
+  }
+
+  .def-expr {
+    font-family: 'Fraunces', serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--accent);
+    margin-bottom: 5px;
+  }
+
+  .def-text {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+
+  .def-syn {
+    font-style: italic;
+    color: #9B8F85;
+    margin-top: 4px;
+    display: block;
+    font-size: 12px;
+  }
+
+  /* Summary */
+  .agree-summary {
+    margin-top: 2rem;
+    background: var(--card);
+    border: 0.5px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem 1.5rem;
+    display: none;
+  }
+
+  .sum-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .sum-row {
+    font-size: 12.5px;
+    color: var(--muted);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.5;
+  }
+
+  .sum-bar-wrap {
+    flex: 1;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .sum-bar {
+    height: 100%;
+    background: var(--ink);
+    border-radius: 2px;
+    transition: width .4s ease;
+  }
+
+  footer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    padding: 1.5rem;
+    border-top: 0.5px solid var(--border);
+    margin-top: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .op-scale { flex-wrap: wrap; }
+    .op-val { min-width: auto; }
+    header { padding: 2rem 1.25rem 2.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-label">C1 Vocabulary Exercise</div>
+  <h1>The Rhythm of Life<br>&amp; Deadlines</h1>
+  <p>Gap-fill exercise with time expressions. Fill each blank, check your answer, then share your opinion.</p>
+</header>
+
+<div class="main">
+
+  <div class="score-bar">
+    <div>
+      <div class="score-label">Score</div>
+      <div class="score-num" id="score-display">0 / 0</div>
+    </div>
+    <button class="reset-btn" onclick="resetAll()">Reset all</button>
+  </div>
+
+  <div class="section-label">Word bank — select a blank, then click an expression</div>
+  <div class="bank" id="bank"></div>
+
+  <div class="section-label">Sentences</div>
+  <div id="questions"></div>
+
+  <div class="agree-summary" id="agree-summary">
+    <div class="sum-title">Your opinions at a glance</div>
+    <div id="sum-rows"></div>
+  </div>
+
+  <div class="def-section">
+    <div class="def-title">Definitions &amp; synonyms</div>
+    <div class="def-grid" id="def-grid"></div>
+  </div>
+
+</div>
+
+<footer>C1 English · Time Expressions · The Rhythm of Life &amp; Deadlines</footer>
+
+<script>
+const expressions = [
+  "(at) the last minute",
+  "up to speed",
+  "behind the times",
+  "with hindsight",
+  "time flies",
+  "time really drags",
+  "time management",
+  "time and again",
+  "short and sharp"
+];
+
+const defs = [
+  { expr:"(at) the last minute", def:"At the very latest possible moment, often just before a deadline expires.", syn:"at the eleventh hour, just in time, at the wire" },
+  { expr:"up to speed", def:"Fully informed and current with the latest information or developments on a topic.", syn:"in the loop, au courant, fully briefed" },
+  { expr:"behind the times", def:"Outdated in thinking, habits, or methods; failing to keep pace with contemporary change.", syn:"out of date, old-fashioned, stuck in the past" },
+  { expr:"with hindsight", def:"Looking back on past events with knowledge or understanding you did not have at the time.", syn:"in retrospect, looking back, with the benefit of experience" },
+  { expr:"time flies", def:"Time passes much faster than expected, especially when one is engaged or absorbed.", syn:"the hours slip by, time races ahead, before you know it" },
+  { expr:"time really drags", def:"Time passes very slowly and tediously, making a period feel far longer than it is.", syn:"time crawls, the minutes drag, time seems to stand still" },
+  { expr:"time management", def:"The skill of organising and allocating one's time efficiently across tasks and responsibilities.", syn:"scheduling, prioritisation, organising one's workload" },
+  { expr:"time and again", def:"Repeatedly, on many separate occasions — often implying frustration or persistence.", syn:"over and over, repeatedly, time after time, on numerous occasions" },
+  { expr:"short and sharp", def:"Brief, direct, and to the point — delivering information efficiently without unnecessary elaboration.", syn:"concise, punchy, succinct, no-nonsense" }
+];
+
+const questions = [
+  { text:`Poor ___ is not simply a personal failing — it is often a symptom of an overloaded system that sets people up to fail.`, answer:"time management", opLabel:"Individuals, not systems, are mostly to blame when deadlines are missed." },
+  { text:`She had warned the team ___ that overcommitting in the planning phase would inevitably come back to haunt them, yet the same mistakes kept repeating.`, answer:"time and again", opLabel:"Repeated warnings that go unheeded are a sign of poor leadership, not poor listening." },
+  { text:`Many professionals who pride themselves on efficiency have, ___, come to realise that working more slowly and deliberately would have spared them enormous rework.`, answer:"with hindsight", opLabel:"Slowing down and being more deliberate is always the wiser approach to complex tasks." },
+  { text:`Any organisation that is still operating on annual performance reviews alone is frankly ___ in its approach to talent development.`, answer:"behind the times", opLabel:"Annual performance reviews are no longer a useful tool in modern workplaces." },
+  { text:`When you are genuinely absorbed in meaningful work, ___ — which is precisely why protecting stretches of uninterrupted focus time matters so much.`, answer:"time flies", opLabel:"Losing track of time is the clearest sign that someone is doing the right kind of work." },
+  { text:`Those who habitually leave everything to ___ are not necessarily disorganised; some are simply wired to produce their sharpest thinking under pressure.`, answer:"(at) the last minute", opLabel:"Working under deadline pressure consistently produces better results than planning far ahead." },
+  { text:`In environments characterised by repetition and rigid routine, ___ — and that creeping sense of slowness has a measurable effect on motivation and output.`, answer:"time really drags", opLabel:"Monotonous work is unavoidable in most careers and people simply have to learn to cope with it." },
+  { text:`Keeping a dispersed workforce fully ___ without resorting to an endless parade of meetings requires deliberate communication structures and a degree of trust.`, answer:"up to speed", opLabel:"Remote teams are structurally harder to keep aligned than co-located ones." },
+  { text:`The most effective feedback is ___ — a single, precise observation delivered immediately after the event, rather than a lengthy debrief days later.`, answer:"short and sharp", opLabel:"Brief, immediate feedback is more valuable than thorough feedback given with a delay." }
+];
+
+let selected = null;
+let correct = 0, attempted = 0;
+const filled = {};
+const checked = {};
+const opValues = {};
+
+function agreeLabel(v) {
+  if (v <= 15) return "strongly disagree";
+  if (v <= 35) return "disagree";
+  if (v <= 55) return "neutral";
+  if (v <= 75) return "agree";
+  return "strongly agree";
+}
+
+function updateBank() {
+  document.querySelectorAll('.chip').forEach(c => {
+    const isUsed = Object.values(filled).includes(c.dataset.expr);
+    c.classList.toggle('used', isUsed);
+  });
+}
+
+function selectBlank(qi) {
+  if (checked[qi]) return;
+  document.querySelectorAll('.blank').forEach(b => b.classList.remove('selected'));
+  selected = qi;
+  const el = document.getElementById('blank-' + qi);
+  if (el) el.classList.add('selected');
+}
+
+function fillBlank(expr) {
+  if (selected === null) return;
+  if (checked[selected]) return;
+  filled[selected] = expr;
+  const el = document.getElementById('blank-' + selected);
+  if (el) {
+    el.textContent = expr;
+    el.classList.add('filled');
+    el.classList.remove('correct', 'wrong', 'selected');
+  }
+  selected = null;
+  updateBank();
+}
+
+function clearBlank(qi) {
+  if (checked[qi]) return;
+  delete filled[qi];
+  const el = document.getElementById('blank-' + qi);
+  if (el) { el.textContent = 'click to fill'; el.classList.remove('filled','correct','wrong','selected'); }
+  selected = null;
+  updateBank();
+}
+
+function checkAnswer(qi) {
+  if (!filled[qi] || checked[qi]) return;
+  const q = questions[qi];
+  const ok = filled[qi] === q.answer;
+  checked[qi] = true;
+  attempted++; if (ok) correct++;
+  const el = document.getElementById('blank-' + qi);
+  if (el) { el.classList.remove('filled','selected'); el.classList.add(ok ? 'correct' : 'wrong'); }
+  const fb = document.getElementById('fb-' + qi);
+  if (fb) fb.innerHTML = ok
+    ? `<span class="fb-ok">Correct!</span>`
+    : `<span class="fb-no">Not quite — the answer is <strong>${q.answer}</strong>.</span>`;
+  document.getElementById('score-display').textContent = correct + ' / ' + attempted;
+  updateSummary();
+}
+
+function updateSummary() {
+  if (!Object.keys(opValues).length) return;
+  const sum = document.getElementById('agree-summary');
+  sum.style.display = 'block';
+  document.getElementById('sum-rows').innerHTML = questions.map((q, qi) => {
+    const v = opValues[qi];
+    if (v === undefined) return '';
+    return `<div class="sum-row">
+      <span style="min-width:18px;font-size:11px;color:#9B8F85">${qi+1}.</span>
+      <span style="flex:2;font-size:12px">${q.opLabel}</span>
+      <div class="sum-bar-wrap"><div class="sum-bar" style="width:${v}%"></div></div>
+      <span class="op-val">${agreeLabel(v)}</span>
+    </div>`;
+  }).join('');
+}
+
+function resetAll() {
+  correct = 0; attempted = 0; selected = null;
+  Object.keys(filled).forEach(k => delete filled[k]);
+  Object.keys(checked).forEach(k => delete checked[k]);
+  document.getElementById('score-display').textContent = '0 / 0';
+  document.getElementById('agree-summary').style.display = 'none';
+  renderQuestions();
+  updateBank();
+}
+
+function renderBank() {
+  document.getElementById('bank').innerHTML = expressions.map(e =>
+    `<span class="chip" data-expr="${e}" onclick="fillBlank('${e.replace(/'/g,"\\'")}')"> ${e}</span>`
+  ).join('');
+}
+
+function renderQuestions() {
+  document.getElementById('questions').innerHTML = questions.map((q, qi) => `
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-num">${qi + 1}.</span>
+        <span class="q-sentence">${q.text.replace('___', `<span class="blank" id="blank-${qi}" onclick="selectBlank(${qi})">click to fill</span>`)}</span>
+      </div>
+      <div class="q-actions">
+        <button class="check-btn" onclick="checkAnswer(${qi})">Check</button>
+        <button class="clear-btn" onclick="clearBlank(${qi})">Clear</button>
+      </div>
+      <div class="feedback" id="fb-${qi}"></div>
+      <div class="opinion-row">
+        <div class="op-label">Do you agree with this statement?</div>
+        <div class="op-statement">${q.opLabel}</div>
+        <div class="op-scale">
+          <span class="op-end">strongly disagree</span>
+          <input type="range" min="0" max="100" value="50" step="1"
+            oninput="opValues[${qi}]=+this.value; document.getElementById('opv-${qi}').textContent=agreeLabel(+this.value); updateSummary()">
+          <span class="op-end">strongly agree</span>
+          <span class="op-val" id="opv-${qi}">neutral</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderDefs() {
+  document.getElementById('def-grid').innerHTML = defs.map(d => `
+    <div class="def-card">
+      <div class="def-expr">${d.expr}</div>
+      <div class="def-text">${d.def}<span class="def-syn">→ ${d.syn}</span></div>
+    </div>
+  `).join('');
+}
+
+renderBank();
+renderQuestions();
+renderDefs();
+</script>
+</body>
+</html>
